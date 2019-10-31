@@ -1,0 +1,93 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.scijava</groupId>
+        <artifactId>pom-scijava</artifactId>
+        <version>27.0.1</version>
+    </parent>
+
+    <groupId>de.hanslovsky</groupId>
+    <artifactId>maven-shade-annotations</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+
+    <repositories>
+        <repository>
+            <id>scijava.public</id>
+            <url>http://maven.scijava.org/content/groups/public</url>
+        </repository>
+    </repositories>
+
+    <properties>
+        <enforcer.skip>true</enforcer.skip>
+        <package-name>de.hanslovsky.shade</package-name>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.janelia.saalfeldlab</groupId>
+            <artifactId>n5</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>fat</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <configuration>
+                            <shadedArtifactId>${project.artifactId}</shadedArtifactId>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>shade</goal>
+                                </goals>
+                                <configuration>
+                                    <transformers>
+                                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                            <mainClass>Main</mainClass>
+                                        </transformer>
+                                    </transformers>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>addFile</id>
+            <build>
+                <plugins>
+                    <plugin>
+                          <groupId>org.codehaus.mojo</groupId>
+                          <artifactId>build-helper-maven-plugin</artifactId>
+                          <version>3.0.0</version>
+                          <executions> 
+                              <execution> 
+                                  <phase>generate-sources</phase>
+                                  <goals>         
+                                      <goal>add-source</goal>
+                                  </goals>
+                                  <configuration> 
+                                      <sources>     
+                                          <source>src/main2/java</source>
+                                      </sources>
+                                  </configuration>
+                              </execution>
+                          </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
